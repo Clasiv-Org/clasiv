@@ -1,7 +1,7 @@
 import { 
 	View, 
-	TouchableOpacity, 
-	StyleSheet, 
+	StyleSheet,
+    Pressable, 
 } from "react-native";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,9 +12,9 @@ import LinearGradient from "react-native-linear-gradient";
 import { BlurView } from "@react-native-community/blur";
 
 const tabs: TabButton[] = [
-	{ route: "Assignment",		icon: "checklist",	label: "Assignments"    },
+	{ route: "Assignments",		icon: "checklist",	label: "Assignments"    },
 	{ route: "Home",			icon: "home-fill",  label: "Home"			},
-	{ route: "Announcement",	icon: "inbox-fill", label: "Announcements"	},
+	{ route: "Announcements",	icon: "inbox-fill", label: "Announcements"	},
 ];
 
 const BottomTabBar = ({ state, navigation }: BottomTabBarProps) => {
@@ -36,11 +36,17 @@ const BottomTabBar = ({ state, navigation }: BottomTabBarProps) => {
 						? [Color.primary, Color.primaryDark]
 						: ["transparent", "transparent"];
 					return (
-						<TouchableOpacity
+						<Pressable
 							key={tab.route}
-							style={styles.tabButton}
+							style={({pressed}) => [
+								styles.tabButton,
+								{
+									opacity: pressed ? 0.7 : 1,
+                                    transform: [{scale: pressed ? 0.98 : 1}]
+									
+								}
+							]}
 							onPress={() => navigation.navigate(tab.route)}
-							activeOpacity={0.7}
 						>
 							<LinearGradient
 								colors={gradientColors}
@@ -48,7 +54,7 @@ const BottomTabBar = ({ state, navigation }: BottomTabBarProps) => {
 							>
 								<Octicons name={tab.icon} size={iconSize} color={iconColor} />
 							</LinearGradient>
-						</TouchableOpacity>
+						</Pressable>
 					);
 				})}
 			</View>

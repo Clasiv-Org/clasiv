@@ -5,8 +5,7 @@ import type { RootStackParamList } from '@/types/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// replace this with your actual auth state (context, zustand, mmkv, etc.)
-const useIsAuthenticated = () => true;
+const useIsAuthenticated = () => false;
 
 const RootNavigator = () => {
     const isAuthenticated = useIsAuthenticated();

@@ -8,14 +8,15 @@ export type RootStackParamList = {
 };
 
 export type AuthStackParamList = {
+	Landing: undefined;
     Login: undefined;
 	Activate: undefined;
 };
 
 export type TabParamList = {
     Home: undefined;
-    Assignment: undefined;
-    Announcement: undefined;
+    Assignments: undefined;
+    Announcements: undefined;
 };
 
 export type TabButton = {
