@@ -10,7 +10,11 @@ const AuthNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
 			<Stack.Screen name="Landing" component={LandingScreen} />
-            <Stack.Screen name="Login"  component={Login}  />
+            <Stack.Screen 
+				name="Login"  
+				component={Login} 
+				options={{ keyboardHandlingEnabled: true }} 
+			/>
             <Stack.Screen name="Activate" component={Signup} />
         </Stack.Navigator>
     );
