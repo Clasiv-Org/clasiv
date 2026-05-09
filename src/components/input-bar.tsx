@@ -10,7 +10,7 @@ import {
 import { Octicons } from '@react-native-vector-icons/octicons';
 import { InputBarProps } from '@/types/input-bar';
 import { Color } from '@/theme/color';
-import { LinearGradient } from 'react-native-linear-gradient';
+import LinearGradient from 'react-native-linear-gradient';
 import { withOpacity } from '@/utils/color';
 
 
@@ -40,10 +40,10 @@ const InputBar = ({
 
 	return (
 		<LinearGradient
-            colors={colors}
-            locations={locations}
-            start={start}
-            end={end}
+			colors={colors ?? [Color.primary, Color.primaryDark]}
+			start={start ?? {x: 0.5, y: 0}}
+			end={end ?? {x: 0.5, y: 1}}
+            locations={locations ?? [0, 1]}
 			style={[
 				styles.gradient,
 				style

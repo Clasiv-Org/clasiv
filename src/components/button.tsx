@@ -33,7 +33,7 @@ const Button = ({
     colors,
     start,
     end,
-    locations,
+	locations, 
     scaleOnPress = 0.98,
     duration = 150,
     ...rest
@@ -63,9 +63,9 @@ const Button = ({
         >
             <LinearGradient
                 colors={colors ?? [Color.primary, Color.primaryDark]}
-                start={start}
-                end={end}
-                locations={locations}
+                start={start ?? {x: 0.5, y: 0}}
+                end={end ?? {x: 0.5, y: 1}}
+                locations={locations ?? [0, 1]}
 				style={[
 					styles.gradientFill,
 					gradientStyle
