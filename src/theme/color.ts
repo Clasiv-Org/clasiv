@@ -1,6 +1,8 @@
 export const Color = {
 	primary: "#DC143C",
+	primaryAlt: "#4A6182",
 	primaryDark: "#760B20",
+	primaryAltDark: "#1F2937",
 	secondary: "#0B1F3A",
 	background: "#151821",
 	tertiary: "#484848",
