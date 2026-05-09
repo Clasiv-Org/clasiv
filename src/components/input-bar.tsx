@@ -10,7 +10,8 @@ import {
 import { Octicons } from '@react-native-vector-icons/octicons';
 import { InputBarProps } from '@/types/input-bar';
 import { Color } from '@/theme/color';
-import { BlurView } from '@react-native-community/blur';
+import { LinearGradient } from 'react-native-linear-gradient';
+import { withOpacity } from '@/utils/color';
 
 
 const InputBar = ({
@@ -38,18 +39,17 @@ const InputBar = ({
 	const isPassword = textContentType === "password";
 
 	return (
-		<View
+		<LinearGradient
+            colors={colors}
+            locations={locations}
+            start={start}
+            end={end}
 			style={[
 				styles.gradient,
 				style
 			]}
 		>
 			<View style={styles.container}>
-				<BlurView
-					blurType="dark"
-					blurAmount={5}
-					style={StyleSheet.absoluteFill}
-				/>
 				{children}
 				<TextInput
 					value={value ?? valueLocal}
@@ -96,7 +96,7 @@ const InputBar = ({
 					</Pressable>
 				}
 			</View>
-		</View>
+		</LinearGradient>
 	);
 }
 
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		borderRadius: 50,
 		padding: 3,
+		overflow: "hidden",
 	},
 	container: {
 		width: "100%",
@@ -119,12 +120,14 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		paddingRight: 5,
 		overflow: "hidden",
+		backgroundColor: withOpacity(Color.background, 0.8),
 	},
 	searchBarInput: {
 		flex: 1,
 		height: "100%",
 		fontSize: 16,
-		paddingHorizontal: 20,
+		paddingLeft: 20,
+		paddingRight: 5,
 		color: Color.primaryWhite,
 	},
 	button: {
