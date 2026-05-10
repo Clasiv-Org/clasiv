@@ -2,10 +2,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthNavigator from "@/navigations/auth-navigator";
 import TabNavigator from "@/navigations/tab-navigator";
 import type { RootStackParamList } from '@/types/navigation';
+import { useIsLoggedIn } from "@/store/auth";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const useIsAuthenticated = () => false;
+const useIsAuthenticated = useIsLoggedIn;
 
 const RootNavigator = () => {
     const isAuthenticated = useIsAuthenticated();
