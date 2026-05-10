@@ -1,26 +1,33 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { 
 	Image,
 	ImageBackground,
 	Keyboard,
 	KeyboardEvent,
 	Platform,
+	Pressable,
 	StyleSheet, 
 	Text, 
 	TouchableWithoutFeedback,
 	View 
 } from "react-native";
+import Animated, {
+	useSharedValue,
+	useAnimatedStyle,
+	withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from "@/types/navigation";
+import { CommonActions, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/button";
 import GradientBackground from "@/components/gradient-background";
 import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";
-
-type Nav = NativeStackNavigationProp<AuthStackParamList>
+import { LoginSchema } from "@/types/auth";
+import { login } from "@/api/auth/login";
+import { Octicons } from "@react-native-vector-icons/octicons";
+import { useAuthStore } from "@/store/auth";
 
 const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -41,16 +48,72 @@ const useKeyboardHeight = () => {
 	return keyboardHeight;
 };
 
+const isDev = false;
+
 const LoginScreen = () => {
+	const { setUser, setAccessToken } = useAuthStore();
 	const insets = useSafeAreaInsets();
-	const navigation = useNavigation<Nav>();
+	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
-	const [userCred, setUserCred] = useState("");
+	const [identifier, setIdentifier] = useState("");
 	const [password, setPassword] = useState("");
 
+	const opacity = useSharedValue(0);
+	const translateX = useSharedValue(40);
+
+	useFocusEffect(
+		useCallback(() => {
+			opacity.value = withTiming(1, { duration: 250 });
+			translateX.value = withTiming(0, { duration: 250 });
+
+			return () => {
+				opacity.value = 0;
+				translateX.value = 40;
+			};
+		}, [])
+	);
+
+	const animatedStyle = useAnimatedStyle(() => ({
+		opacity: opacity.value,
+		transform: [{ translateX: translateX.value }],
+	}));
+
 	const handleBack = () => navigation.goBack();
-	const handleActivate = () => navigation.navigate("Activate");
-	const handleLogin = () => console.log("Login");
+	const handleActivate = () => {
+		const state = navigation.getState();
+		const currentIndex = state.index;
+
+		if (currentIndex === 1) {
+			navigation.dispatch(
+				CommonActions.reset({
+					index: 1,
+					routes: [
+						{ name: 'Landing' },
+						{ name: 'Activate' },
+					],
+				})
+			);
+		} 
+		else navigation.pop();
+	};
+	const handleLogin = async () => {
+		const data = LoginSchema.parse({
+			identifier,
+			password
+		});
+		console.log(data);
+
+		const response = await login(data);
+		console.log(response.user.userName);
+		const profile = response.user.profile;
+
+		if (profile.type === 'student') console.log(profile.data.enrollments[0].college.name); 
+		if (profile.type === 'teacher') console.log(profile.data.abbrv); 
+		console.log(response.user);
+
+		setUser(response.user);
+		setAccessToken(response.tokens.accessToken);
+	};
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -64,19 +127,34 @@ const LoginScreen = () => {
 				}
 			]}>
 				<GradientBackground
-					topColor="#0B1F3A"
+					topColor={Color.secondary}
 					bottomColor={Color.background}
 					blobs={Blobs}
 				/>
 				<ImageBackground
 					source={require("@/assets/images/landing-bg-x1.png")}
-					style={styles.containerBackground}
+					style={StyleSheet.absoluteFill}
 				/>
-				<View style={{
-					flex: 1,
-					marginBottom: Platform.OS === "android" ? keyboardHeight : 0
-				}}>
-
+				<Animated.View style={[
+					{ 
+						flex: 1, 
+						marginBottom: Platform.OS === "android" ? keyboardHeight : 0 
+					}, 
+					animatedStyle
+				]}>
+					<View style={styles.containerTopBar}>
+						<Pressable 
+							style={styles.backButton}
+							onPress={handleBack}
+							android_ripple={{ 
+								borderless: true,
+								radius: 20,
+								color: Color.tertiaryDark 
+							}}
+						>
+							<Octicons name="chevron-left" size={36} color={Color.primary} />
+						</Pressable>
+					</View>
 					<View style={styles.containerContent}>
 						<Image 
 							source={require("@/assets/images/icon-bgless-nopadding-x0.5.png")} 
@@ -87,8 +165,10 @@ const LoginScreen = () => {
 					<View style={styles.containerAction}>
 						<View style={styles.containerInput}>
 							<InputBar
-								value={userCred}
-								onChangeText={(text) => setUserCred(text.toLowerCase().trim())}
+								value={identifier}
+								onChangeText={(text) => 
+									setIdentifier(text.toLowerCase().trim())
+								}
 								style={styles.inputBar}
 								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
 								colors={[Color.tertiary, Color.tertiaryDark]}
@@ -112,19 +192,32 @@ const LoginScreen = () => {
 								textContentType="password"
 							/>
 						</View>
-						<Button
-							style={styles.button}
-							gradientStyle={styles.buttonGradient}
-							colors={[Color.primary, Color.primaryDark]}
-							onPress={handleLogin}
-						>
-							<Text style={styles.buttonText}>Login</Text>
-						</Button>
+						<View style={styles.containerButton}>
+							<Button
+								style={styles.button}
+								gradientStyle={styles.buttonGradient}
+								colors={[Color.primary, Color.primaryDark]}
+								onPress={handleLogin}
+							>
+								<Text style={styles.buttonText}>Login</Text>
+							</Button>
+							{ keyboardHeight === 0 && <Pressable
+								style={styles.activateButton}
+								onPress={handleActivate}
+							>
+								<Text style={styles.activateText}>
+									Account not not found? Activate
+								</Text>
+							</Pressable>
+							}
+						</View>
 					</View>
-					<View style={styles.containerFooter}>
-						<Text style={styles.footerText}>v0.0.1b</Text>
-					</View>
-				</View>
+					{ keyboardHeight === 0 &&
+						<View style={styles.containerFooter}>
+							<Text style={styles.footerText}>v0.0.1b</Text>
+						</View>
+					}
+				</Animated.View>
 			</View>
 		</TouchableWithoutFeedback>
 	);
@@ -136,44 +229,65 @@ const styles = StyleSheet.create({
 		backgroundColor: Color.background,
 		paddingHorizontal: 10,
 	},
-	containerBackground: {
-		...StyleSheet.absoluteFill,
+	containerTopBar: {
+		height: 50,
+		width: 50,
+		position: "absolute",
+		top: 0,
+		left: 0,
+		zIndex: 999,
+		backgroundColor: isDev ? "yellow" : "transparent",
+	},
+	backButton: {
+		flex: 1,
+		width: "100%",
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	containerContent: {
-		height: "40%",
+		height: "45%",
 		justifyContent: "flex-end",
 		alignItems: "center",
 		paddingTop: 60,
+		backgroundColor: isDev ? "green" : "transparent",
 	},
 	icon: {
 		width: 100,
 		height: 100,
 	},
 	titleText: {
-		marginTop: 20,
+		margin: 20,
 		fontFamily: "Sora-ExtraBold",
-		fontSize: 32,
+		fontSize: 28,
 		textAlign: "center",
 		color: Color.primaryWhite,
+		backgroundColor: isDev ? "red" : "transparent"
 	},
 	containerAction: {
 		flex: 1,
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		alignItems: "center",
-		gap: 30,
+		paddingTop: 20,
+		gap: 20,
+		backgroundColor: isDev ? "red" : "transparent",
 	},
 	containerInput: {
-		gap: 15,
+		gap: 10,
 	},
 	inputBar: {
-		width: 300,
+		width: 350,
 		height: 60,
 		borderRadius: 30,
+	},
+	containerButton: {
+		gap: 10,
+		backgroundColor: isDev ? "green" : "transparent",
 	},
 	button: {
 		width: 300,
 		height: 60,
 		borderRadius: 30,
+		backgroundColor: isDev ? "green" : "transparent",
 	},
 	buttonGradient: {
 		paddingBottom: 5,
@@ -183,6 +297,15 @@ const styles = StyleSheet.create({
 		fontSize: 28,
 		textAlignVertical: "top",
 		color: Color.primaryWhite,
+	},
+	activateButton: {
+		// backgroundColor: "red"
+	},
+	activateText: {
+		fontFamily: "Sora-Bold",
+		fontSize: 14,
+		textAlign: "center",
+		color: Color.primaryAlt,
 	},
 	containerFooter: {
 		height: 50,
