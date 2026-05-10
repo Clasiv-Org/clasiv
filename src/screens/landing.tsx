@@ -9,23 +9,22 @@ import {
 	useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from "@/types/navigation";
-import { Color } from "@/theme/color";
+import { AuthStackNavigationProps } from "@/types/navigation";
+import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/button";
 import GradientBackground from "@/components/gradient-background";
 
-type Nav =	NativeStackNavigationProp<AuthStackParamList>
+const isDev = false;
 
 const LandingScreen = () => {
 	const insets = useSafeAreaInsets();
-	const navigation = useNavigation<Nav>();
+	const navigation = useNavigation<AuthStackNavigationProps>();
 
     const handleActivate = () => {
         navigation.navigate("Activate");
     }
     const handleLogin = () => {
-        navigation.push("Login");
+        navigation.navigate("Login");
     }
 
 	return (
@@ -37,14 +36,9 @@ const LandingScreen = () => {
 			}
 		]}>
 			<GradientBackground
-				topColor="#0B1F3A"
+				topColor={Color.secondary}
 				bottomColor={Color.background}
-				blobs={[
-					{ x: 20, y: -40, r: 50, color: "black", opacity: 0.5 },
-					{ x: 10, y: 60, r: 40, color: "#1E3A8A", opacity: 0.25 },
-					{ x: 85, y: -20, r: 45, color: Color.primaryDark, opacity: 0.3 },
-					{ x: 80, y: 150, r: 70, color: "black", opacity: 0.7 },
-				]}
+				blobs={Blobs}
 			/>
 			<ImageBackground
 				source={require("@/assets/images/landing-bg-x1.png")}
@@ -71,7 +65,7 @@ const LandingScreen = () => {
 				<Button
 					style={styles.button}
 					gradientStyle={styles.buttonGradient}
-					colors={[Color.primaryWhite, Color.tertiary]}
+					colors={[Color.primaryAlt, Color.primaryAltDark]}
 					onPress={handleLogin}
 				>
 					<Text style={styles.buttonText}>Login</Text>
@@ -92,7 +86,7 @@ const styles = StyleSheet.create({
 	},
 	containerBackground: {
 		...StyleSheet.absoluteFill,
-		// backgroundColor: Color.primary,
+		backgroundColor: isDev ? "red" : "transparent",
 	},
 	containerContent: {
 		flex: 1,
@@ -102,7 +96,7 @@ const styles = StyleSheet.create({
 	icon: {
 		width: 180,
 		height: 180,
-		// backgroundColor: Color.tertiary
+        backgroundColor: isDev ? "gray" : "transparent",
 	},
 	titleText: {
 		marginTop: 20,
@@ -110,7 +104,7 @@ const styles = StyleSheet.create({
 		fontSize: 40,
 		lineHeight: 36, 
 		color: Color.primary,
-		// backgroundColor: Color.primaryWhite
+		backgroundColor: isDev ? "green" : "transparent",
 	},
 	taglineText: {
 		marginTop: 30,
@@ -124,7 +118,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		gap: 10, 
-		// backgroundColor: Color.primaryDark
+		backgroundColor: isDev ? "blue" : "transparent",
 	},
 	separator: {
 		fontFamily: "Sora-Bold",
