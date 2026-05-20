@@ -72,6 +72,12 @@ def enableProguardInReleaseBuilds = false
  * this variant is about 6MiB larger per architecture than default.
  */
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+def keystorePropertiesFile = rootProject.file("gradle.properties.local")
+def keystoreProperties = new Properties()
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -93,6 +99,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+		release {
+			if (keystoreProperties['MYAPP_UPLOAD_STORE_FILE']) {
+				storeFile file(keystoreProperties['MYAPP_UPLOAD_STORE_FILE'])
+				storePassword keystoreProperties['MYAPP_UPLOAD_STORE_PASSWORD']
+				keyAlias keystoreProperties['MYAPP_UPLOAD_KEY_ALIAS']
+				keyPassword keystoreProperties['MYAPP_UPLOAD_KEY_PASSWORD']
+			}
+		}
     }
     buildTypes {
         debug {
@@ -101,7 +115,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
