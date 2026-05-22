@@ -1,4 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { 
+	useCallback, 
+	useEffect, 
+	useState 
+} from "react";
 import { 
 	Image,
 	ImageBackground,
@@ -17,7 +21,10 @@ import Animated, {
 	withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { CommonActions, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { 
+	useFocusEffect, 
+	useNavigation 
+} from "@react-navigation/native";
 import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/button";
@@ -25,7 +32,6 @@ import GradientBackground from "@/components/gradient-background";
 import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";
 import { LoginSchema } from "@/types/auth";
-import { login } from "@/api/auth/login";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { useAuthStore } from "@/store/auth";
 
@@ -51,7 +57,7 @@ const useKeyboardHeight = () => {
 const isDev = false;
 
 const LoginScreen = () => {
-	const { setUser, setAccessToken } = useAuthStore();
+	const { setUser, setAccessToken, loading, login } = useAuthStore();
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
@@ -83,16 +89,8 @@ const LoginScreen = () => {
 		const state = navigation.getState();
 		const currentIndex = state.index;
 
-		if (currentIndex === 1) {
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 1,
-					routes: [
-						{ name: 'Landing' },
-						{ name: 'Activate' },
-					],
-				})
-			);
+		if (currentIndex > 0 && state.routes[currentIndex - 1].name === "Landing") {
+			navigation.push("Activate");
 		} 
 		else navigation.pop();
 	};
@@ -102,17 +100,7 @@ const LoginScreen = () => {
 			password
 		});
 		console.log(data);
-
-		const response = await login(data);
-		console.log(response.user.userName);
-		const profile = response.user.profile;
-
-		if (profile.type === 'student') console.log(profile.data.enrollments[0].college.name); 
-		if (profile.type === 'teacher') console.log(profile.data.abbrv); 
-		console.log(response.user);
-
-		setUser(response.user);
-		setAccessToken(response.tokens.accessToken);
+		await login(data);
 	};
 
 	return (
@@ -297,9 +285,10 @@ const styles = StyleSheet.create({
 		fontSize: 28,
 		textAlignVertical: "top",
 		color: Color.primaryWhite,
+		backgroundColor: isDev ? "red" : "transparent",
 	},
 	activateButton: {
-		// backgroundColor: "red"
+		backgroundColor: isDev ? "red" : "taransparent",
 	},
 	activateText: {
 		fontFamily: "Sora-Bold",

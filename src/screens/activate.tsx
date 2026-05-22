@@ -22,7 +22,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { 
-	CommonActions, 
 	useFocusEffect, 
 	useNavigation 
 } from "@react-navigation/native";
@@ -88,22 +87,14 @@ const ActivateScreen = () => {
 		const state = navigation.getState();
 		const currentIndex = state.index;
 
-		if (currentIndex === 1) {
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 1,
-					routes: [
-						{ name: 'Landing' },
-						{ name: 'Login' },
-					],
-				})
-			);
+		if(currentIndex > 0 && state.routes[currentIndex - 1].name === "Landing") {
+			navigation.push("Login");
 		} 
 		else navigation.pop();
 	};
 
 	const handleActivate = async () => {
-		console.log("activate");
+		navigation.navigate("Onboarding");
 	};
 
 	return (
