@@ -9,8 +9,9 @@ import {
 } from "react-native-safe-area-context";
 import { Color } from "@/theme/color";
 import TopBar from "@/components/tob-bar";
+import InputBar from "@/components/input-bar";
 
-const HomeScreen = () => {
+const AssignmentScreen = () => {
 	const insets = useSafeAreaInsets();
 
 	return (
@@ -22,16 +23,13 @@ const HomeScreen = () => {
 			}
 		]}>
 			<TopBar
-                title="Announcements"
+                title="Assignments"
             />
 			<ScrollView
 				style={styles.containerContent}
 				contentContainerStyle={styles.containerContentInner}
 				showsVerticalScrollIndicator={false}
 			>
-				<Text style={{fontSize: 24, color: Color.primary}}>
-					Home Screen
-				</Text>
 			</ScrollView>
 		</View>
 	);
@@ -61,4 +59,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default HomeScreen;
+export default AssignmentScreen;

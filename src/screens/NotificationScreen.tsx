@@ -8,10 +8,9 @@ import {
 	useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Color } from "@/theme/color";
-import FootNote from "@/components/footnote";
 import TopBar from "@/components/tob-bar";
 
-const HomeScreen = () => {
+const NotificationScreen = () => {
 	const insets = useSafeAreaInsets();
 
 	return (
@@ -22,16 +21,14 @@ const HomeScreen = () => {
 				paddingBottom: insets.bottom,
 			}
 		]}>
-			<TopBar title="Clasiv" />
-			<ScrollView 
+			<TopBar
+                title="Notifications"
+            />
+			<ScrollView
 				style={styles.containerContent}
 				contentContainerStyle={styles.containerContentInner}
 				showsVerticalScrollIndicator={false}
 			>
-				<Text style={{fontSize: 24, color: Color.primary}}>
-					Home Screen
-				</Text>
-				<FootNote/>
 			</ScrollView>
 		</View>
 	);
@@ -54,18 +51,11 @@ const styles = StyleSheet.create({
 	},
     containerContent: {
         flex: 1,
-		overflow: "scroll",
         // backgroundColor: "white",
-	},
+    },
 	containerContentInner: {
 		paddingBottom: 100, // space for floating tab bar
 	},
-	containerNav: {
-		height: 100,
-		paddingHorizontal: 10,
-        justifyContent: "center",
-		// backgroundColor: "red",
-	},
 });
 
-export default HomeScreen;
+export default NotificationScreen;

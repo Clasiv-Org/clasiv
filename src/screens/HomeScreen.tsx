@@ -8,10 +8,16 @@ import {
 	useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Color } from "@/theme/color";
+import FootNote from "@/components/footnote";
 import TopBar from "@/components/tob-bar";
+import { useAuthStore } from "@/store/auth";
+import { useNavigation } from "@react-navigation/native";
+
+const isDev = false;
 
 const HomeScreen = () => {
 	const insets = useSafeAreaInsets();
+	const { user } = useAuthStore();
 
 	return (
 		<View style={[
@@ -21,17 +27,15 @@ const HomeScreen = () => {
 				paddingBottom: insets.bottom,
 			}
 		]}>
-			<TopBar
-                title="Assignments"
-            />
-			<ScrollView
+			<TopBar title="Clasiv"/>
+			<ScrollView 
 				style={styles.containerContent}
 				contentContainerStyle={styles.containerContentInner}
 				showsVerticalScrollIndicator={false}
 			>
 				<Text style={{fontSize: 24, color: Color.primary}}>
-					Home Screen
 				</Text>
+				<FootNote/>
 			</ScrollView>
 		</View>
 	);
@@ -45,7 +49,7 @@ const styles = StyleSheet.create({
 	},
     containerTopBar: {
         height: 50,
-        // backgroundColor: "gray",
+        backgroundColor: isDev ? "red" : "transparent",
     },
 	titleText: {
 		fontFamily: "Sora-ExtraBold",
@@ -54,10 +58,17 @@ const styles = StyleSheet.create({
 	},
     containerContent: {
         flex: 1,
-        // backgroundColor: "white",
-    },
+		overflow: "scroll",
+        backgroundColor: isDev ? "white" : "transparent",
+	},
 	containerContentInner: {
-		paddingBottom: 100, // space for floating tab bar
+		paddingBottom: 100, 
+	},
+	containerNav: {
+		height: 100,
+		paddingHorizontal: 10,
+        justifyContent: "center",
+		backgroundColor: isDev ? "green" : "transparent",
 	},
 });
 

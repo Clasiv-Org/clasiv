@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LandingScreen from "@/screens/landing";
-import LoginScreen from "@/screens/login";
-import ActivateScreen from "@/screens/activate";
-import OnboardingScreen from "@/screens/onboarding";
+import LandingScreen from "@/screens/LandingScreen";
+import LoginScreen from "@/screens/LoginScreen";
+import ActivateScreen from "@/screens/ActivateScreen";
+import OnboardingScreen from "@/screens/OnboardingScreen";
+import EmailVerifyScreen from "@/screens/EmailVerifyScreen";
 import type { AuthStackParamList } from "@/types/navigation";
 import { Color } from "@/theme/color";
-import EmailVerifyScreen from "@/screens/email-verify";
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
