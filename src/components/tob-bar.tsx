@@ -6,12 +6,18 @@ import {
 	View, 
 } from "react-native";
 import { Color } from "@/theme/color";
+import { useNavigation } from "@react-navigation/native";
+import { AppStackNavigationProps } from "src/types/navigation";
 
 type TopBarProps = {
 	title: string;
 }
 
 const TopBar = (props: TopBarProps) => {
+	const navigation = useNavigation<AppStackNavigationProps>();
+	const handleProfilePress = () => {
+		navigation.navigate("Profile");
+	}
 	return (
 		<View style={styles.container}>
 			<Text style={styles.titleText}>{props.title}</Text>
@@ -23,7 +29,7 @@ const TopBar = (props: TopBarProps) => {
 						transform: [{scale: pressed ? 0.95 : 1}]
 					}
 				]}
-				onPress={() => {}}
+				onPress={handleProfilePress}
 			>
 				<Ionicons name="menu" size={32} color={Color.primaryWhite} />
 			</Pressable>
