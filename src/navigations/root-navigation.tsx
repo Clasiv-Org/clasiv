@@ -1,20 +1,18 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthNavigator from "@/navigations/auth-navigator";
-import TabNavigator from "@/navigations/tab-navigator";
-import type { RootStackParamList } from '@/types/navigation';
+import AppNavigator from "@/navigations/app-navigator";
+import type { RootStackParamList } from "@/types/navigation";
 import { useIsLoggedIn } from "@/store/auth";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const useIsAuthenticated = useIsLoggedIn;
-
 const RootNavigator = () => {
-    const isAuthenticated = useIsAuthenticated();
+    const isAuthenticated = useIsLoggedIn();
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             {isAuthenticated ? (
-                <Stack.Screen name="Main" component={TabNavigator} />
+				<Stack.Screen name="Main" component={AppNavigator} />
             ) : (
                 <Stack.Screen name="Auth" component={AuthNavigator} />
             )}
