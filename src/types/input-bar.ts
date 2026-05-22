@@ -6,3 +6,9 @@ export type InputBarProps = LinearGradientProps & TextInputProps & {
     style?: LinearGradientProps['style'];
 	textStyle?: TextInputProps['style'];
 };
+
+export type InputValueProps = {
+	value: string;
+	color?: string | null;
+	placeholder?: string | null;
+}

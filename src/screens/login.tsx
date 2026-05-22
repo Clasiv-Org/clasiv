@@ -4,6 +4,7 @@ import {
 	useState 
 } from "react";
 import { 
+	ActivityIndicator,
 	Image,
 	ImageBackground,
 	Keyboard,
@@ -34,6 +35,7 @@ import { withOpacity } from "@/utils/color";
 import { LoginSchema } from "@/types/auth";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { useAuthStore } from "@/store/auth";
+import { InputValueProps } from "@/types/input-bar";
 
 const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -57,12 +59,12 @@ const useKeyboardHeight = () => {
 const isDev = false;
 
 const LoginScreen = () => {
-	const { setUser, setAccessToken, loading, login } = useAuthStore();
+	const { loading, login } = useAuthStore();
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
-	const [identifier, setIdentifier] = useState("");
-	const [password, setPassword] = useState("");
+	const [identifier, setIdentifier] = useState<InputValueProps>({value: ""});
+	const [password, setPassword] = useState<InputValueProps>({value: ""});
 
 	const opacity = useSharedValue(0);
 	const translateX = useSharedValue(40);
@@ -95,9 +97,27 @@ const LoginScreen = () => {
 		else navigation.pop();
 	};
 	const handleLogin = async () => {
+		if(identifier.value === "" || password.value === ""){
+			if(identifier.value === ""){
+				setIdentifier({
+					value: "",
+					color: withOpacity(Color.primary, 0.8),
+					placeholder: "Username or Email is required"
+				});
+			}
+			if(password.value === ""){
+				setPassword({
+					value: "",
+					color: withOpacity(Color.primary, 0.8),
+					placeholder: "Password is required"
+				});
+			}
+            return;
+		}
+
 		const data = LoginSchema.parse({
-			identifier,
-			password
+			identifier: identifier.value,
+			password: password.value
 		});
 		console.log(data);
 		await login(data);
@@ -153,30 +173,40 @@ const LoginScreen = () => {
 					<View style={styles.containerAction}>
 						<View style={styles.containerInput}>
 							<InputBar
-								value={identifier}
+								value={identifier.value}
 								onChangeText={(text) => 
-									setIdentifier(text.toLowerCase().trim())
+									setIdentifier({
+										value: text.toLowerCase().trim(),
+                                        color: null,
+										placeholder: null
+                                    })
 								}
 								style={styles.inputBar}
-								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
+								placeholderTextColor={identifier.color ?? withOpacity(Color.primaryWhite, 0.5)}
 								colors={[Color.tertiary, Color.tertiaryDark]}
 								start={{ x: 0.5, y: 0 }}
 								end={{ x: 0.5, y: 1 }}
 								autoCapitalize="none"
 								autoCorrect={false}
-								placeholder="Username or Email Address"
+								placeholder={identifier.placeholder ?? "Username or Email"}
 							/>
 							<InputBar
-								value={password}
-								onChangeText={setPassword}
+								value={password.value}
+								onChangeText={(text) => 
+									setPassword({
+                                        value: text,
+                                        color: null,
+                                        placeholder: null
+									})
+								}
 								style={styles.inputBar}
-								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
+								placeholderTextColor={password.color ?? withOpacity(Color.primaryWhite, 0.5)}
 								colors={[Color.tertiary, Color.tertiaryDark]}
 								start={{ x: 0.5, y: 0 }}
 								end={{ x: 0.5, y: 1 }}
 								autoCapitalize="none"
 								autoCorrect={false}
-								placeholder="Password"
+								placeholder={password.placeholder ?? "Password"}
 								textContentType="password"
 							/>
 						</View>
@@ -187,7 +217,17 @@ const LoginScreen = () => {
 								colors={[Color.primary, Color.primaryDark]}
 								onPress={handleLogin}
 							>
-								<Text style={styles.buttonText}>Login</Text>
+								<View style={styles.buttonIcon}>
+									<View style={styles.buttonIconInner}>
+									{ loading &&
+									<ActivityIndicator 
+										size="large"
+										color={Color.primaryWhite}
+									/>}
+									</View>
+									<Text style={styles.buttonText}>Login</Text>
+									<View style={styles.buttonIconInner}/>
+								</View>
 							</Button>
 							{ keyboardHeight === 0 && <Pressable
 								style={styles.activateButton}
@@ -280,6 +320,21 @@ const styles = StyleSheet.create({
 	buttonGradient: {
 		paddingBottom: 5,
 	},
+    buttonIcon: {
+		width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+		gap: 10,
+		backgroundColor: isDev ? "green" : "transparent",
+    },
+    buttonIconInner: {
+		flex: 1,
+		height: "100%",
+        backgroundColor: isDev ? "yellow" : "transparent",
+		alignItems: "flex-end",
+        justifyContent: "center",
+    },
 	buttonText: {
 		fontFamily: "Sora-Bold",
 		fontSize: 28,

@@ -4,15 +4,16 @@ import {
 	useState 
 } from "react";
 import { 
-	Image,
-	ImageBackground,
-	Keyboard,
-	KeyboardEvent,
-	Platform,
-	Pressable,
+	ActivityIndicator, 
+	Image, 
+	ImageBackground, 
+	Keyboard, 
+	KeyboardEvent, 
+	Platform, 
+	Pressable, 
 	StyleSheet, 
 	Text, 
-	TouchableWithoutFeedback,
+	TouchableWithoutFeedback, 
 	View 
 } from "react-native";
 import Animated, {
@@ -32,6 +33,8 @@ import GradientBackground from "@/components/gradient-background";
 import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
+import { useAuthStore } from "@/store/auth";
+import { InputValueProps } from "src/types/input-bar";
 
 const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -56,10 +59,11 @@ const isDev = false;
 
 const ActivateScreen = () => {
 	const insets = useSafeAreaInsets();
+	const { loading } = useAuthStore();
 	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
-	const [userName, setUserName] = useState("");
-	const [password, setPassword] = useState("");
+	const [userName, setUserName] = useState<InputValueProps>({value: ""});
+	const [password, setPassword] = useState<InputValueProps>({value: ""});
 
 	const opacity = useSharedValue(0);
 	const translateX = useSharedValue(40);
@@ -94,6 +98,23 @@ const ActivateScreen = () => {
 	};
 
 	const handleActivate = async () => {
+		if(userName.value === "" || password.value === ""){
+			if(userName.value === ""){
+				setUserName({
+					value: "",
+					color: withOpacity(Color.primary, 0.8),
+					placeholder: "Username is required"
+				});
+			}
+			if(password.value === ""){
+				setPassword({
+					value: "",
+					color: withOpacity(Color.primary, 0.8),
+					placeholder: "Password is required"
+				});
+			}
+            return;
+		}
 		navigation.navigate("Onboarding");
 	};
 
@@ -149,30 +170,40 @@ const ActivateScreen = () => {
 					<View style={styles.containerAction}>
 						<View style={styles.containerInput}>
 							<InputBar
-								value={userName}
+								value={userName.value}
 								onChangeText={(text) => 
-									setUserName(text.toLowerCase().trim())
+									setUserName({
+										value: text.toLowerCase().trim(),
+                                        color: null,
+										placeholder: null
+									})
 								}
 								style={styles.inputBar}
-								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
+								placeholderTextColor={userName.color ?? withOpacity(Color.primaryWhite, 0.5)}
 								colors={[Color.tertiary, Color.tertiaryDark]}
 								start={{ x: 0.5, y: 0 }}
 								end={{ x: 0.5, y: 1 }}
 								autoCapitalize="none"
 								autoCorrect={false}
-								placeholder="Username"
+								placeholder={userName.placeholder ?? "Username"}
 							/>
 							<InputBar
-								value={password}
-								onChangeText={setPassword}
+								value={password.value}
+								onChangeText={(text) => 
+									setPassword({
+                                        value: text,
+                                        color: null,
+                                        placeholder: null
+									})
+								}
 								style={styles.inputBar}
-								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
+								placeholderTextColor={password.color ?? withOpacity(Color.primaryWhite, 0.5)}
 								colors={[Color.tertiary, Color.tertiaryDark]}
 								start={{ x: 0.5, y: 0 }}
 								end={{ x: 0.5, y: 1 }}
 								autoCapitalize="none"
 								autoCorrect={false}
-								placeholder="Password"
+								placeholder={password.placeholder ?? "Password"}
 								textContentType="password"
 							/>
 						</View>
@@ -183,7 +214,17 @@ const ActivateScreen = () => {
 								colors={[Color.primary, Color.primaryDark]}
 								onPress={handleActivate}
 							>
-								<Text style={styles.buttonText}>Activate</Text>
+								<View style={styles.buttonIcon}>
+									<View style={styles.buttonIconInner}>
+									{ loading &&
+									<ActivityIndicator 
+										size="large"
+										color={Color.primaryWhite}
+									/>}
+									</View>
+									<Text style={styles.buttonText}>Activate</Text>
+									<View style={styles.buttonIconInner}/>
+								</View>
 							</Button>
 							{keyboardHeight === 0 && (
 								<Pressable
@@ -276,6 +317,21 @@ const styles = StyleSheet.create({
 	buttonGradient: {
 		paddingBottom: 5,
 	},
+    buttonIcon: {
+		width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+		gap: 10,
+		backgroundColor: isDev ? "green" : "transparent",
+    },
+    buttonIconInner: {
+		flex: 1,
+		height: "100%",
+        backgroundColor: isDev ? "yellow" : "transparent",
+		alignItems: "flex-end",
+        justifyContent: "center",
+    },
 	buttonText: {
 		fontFamily: "Sora-Bold",
 		fontSize: 28,
