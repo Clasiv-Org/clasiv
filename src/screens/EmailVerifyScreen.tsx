@@ -26,7 +26,7 @@ import {
 } from "@react-navigation/native";
 import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
-import Button from "@/components/button";
+import Button from "@/components/Button";
 import GradientBackground from "@/components/gradient-background";
 import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";

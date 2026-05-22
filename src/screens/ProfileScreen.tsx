@@ -10,7 +10,7 @@ import { Color } from "@/theme/color";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppStackNavigationProps } from "@/types/navigation";
 import { useNavigation } from "@react-navigation/native";
-import Button from "@/components/button";
+import Button from "@/components/Button";
 
 const ProfileScreen = () => {
 	const insets = useSafeAreaInsets();

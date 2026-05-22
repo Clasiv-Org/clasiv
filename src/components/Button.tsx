@@ -1,29 +1,18 @@
 import { 
-	type PressableProps, 
 	Pressable, 
 	StyleSheet 
-} from 'react-native';
+} from "react-native";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withTiming,
     Easing,
-} from 'react-native-reanimated';
-import LinearGradient, { 
-	type LinearGradientProps 
-} from 'react-native-linear-gradient';
-import { type ReactNode } from 'react';
-import { Color } from '@/theme/color';
+} from "react-native-reanimated";
+import LinearGradient from "react-native-linear-gradient";
+import { Color } from "@/theme/color";
+import { ButtonProps } from "@/types/button";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-type Props = PressableProps & LinearGradientProps & {
-    style?: PressableProps['style'];
-	gradientStyle?: LinearGradientProps['style'];
-    children?: ReactNode;
-    scaleOnPress?: number;
-    duration?: number;
-}
 
 const Button = ({
     children,
@@ -37,7 +26,7 @@ const Button = ({
     scaleOnPress = 0.98,
     duration = 150,
     ...rest
-}: Props) => {
+}: ButtonProps) => {
     const scale = useSharedValue(1);
 
     const animatedStyle = useAnimatedStyle(() => ({
@@ -52,7 +41,7 @@ const Button = ({
             style={[
                 styles.button,
                 animatedStyle,
-                typeof style === 'function' ? 
+                typeof style === "function" ? 
 					style({ pressed: false }) : 
 					style,
             ]}
@@ -81,15 +70,15 @@ const styles = StyleSheet.create({
     button: {
 		width: 100,
         height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
         borderRadius: 25,
-        overflow: 'hidden',
+        overflow: "hidden",
     },
     gradientFill: {
         ...StyleSheet.absoluteFill,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
     },
 });
 
