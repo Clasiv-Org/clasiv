@@ -1,9 +1,9 @@
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { 
 	NativeStackNavigationProp, 
 	NativeStackScreenProps, 
-} from '@react-navigation/native-stack';
-import type { CompositeScreenProps } from '@react-navigation/native';
+} from "@react-navigation/native-stack";
+import type { CompositeScreenProps } from "@react-navigation/native";
 
 export type RootStackParamList = {
     Auth: undefined;
@@ -14,12 +14,19 @@ export type AuthStackParamList = {
 	Landing: undefined;
     Login: undefined;
 	Activate: undefined;
+	Onboarding: undefined;
+	EmailVerify: undefined;
 };
 
 export type TabParamList = {
     Home: undefined;
     Assignments: undefined;
     Announcements: undefined;
+};
+
+export type AppStackParamList = {
+    Tab: undefined;
+    Profile: undefined;
 };
 
 export type TabButton = {
@@ -39,4 +46,6 @@ export type TabScreenProps<T extends keyof TabParamList> = CompositeScreenProps<
     NativeStackScreenProps<RootStackParamList>
 >;
 
-export type AuthStackNavigationProps = NativeStackNavigationProp<AuthStackParamList>
+export type RootStackNavigationProps = NativeStackNavigationProp<RootStackParamList>;
+export type AuthStackNavigationProps = NativeStackNavigationProp<AuthStackParamList>;
+export type AppStackNavigationProps = NativeStackNavigationProp<AppStackParamList>;
