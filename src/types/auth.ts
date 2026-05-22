@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { UserProfileSchema } from "@/types/users";
+import { HTTPResponseSchema } from "@/types/http";
 
 export const LoginSchema = z.object({
     identifier: z.string(),
@@ -15,8 +16,7 @@ export const LoginSchema = z.object({
     };
 });
 
-export const LoginResponseSchema = z.object({
-    message: z.string(),
+export const LoginResponseSchema = HTTPResponseSchema.extend({
 	tokens: z.object({
         accessToken: z.string(),
         refreshToken: z.string(),
