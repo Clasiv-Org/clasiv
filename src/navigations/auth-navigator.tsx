@@ -1,9 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingScreen from "@/screens/LandingScreen";
 import LoginScreen from "@/screens/LoginScreen";
-import ActivateScreen from "@/screens/ActivateScreen";
-import OnboardingScreen from "@/screens/OnboardingScreen";
-import EmailVerifyScreen from "@/screens/EmailVerifyScreen";
+import ActivationScreen from "@/screens/Activation";
+import ActivationOnboardingScreen from "@/screens/ActivationOnboarding";
+import ActivationEmailVerifyScreen from "@/screens/ActivationEmailVerify";
+import ActivationSetPasswordScreen from "@/screens/ActivationSetPassword";
 import type { AuthStackParamList } from "@/types/navigation";
 import { Color } from "@/theme/color";
 
@@ -21,25 +22,33 @@ const AuthNavigator = () => {
 				animation: "none",
 			}}
 		>
-			<Stack.Screen name="Landing" component={LandingScreen} />
+			<Stack.Screen 
+				name="Landing" 
+				component={LandingScreen} 
+			/>
             <Stack.Screen 
 				name="Login"  
 				component={LoginScreen} 
 				options={{ keyboardHandlingEnabled: true }} 
 			/>
             <Stack.Screen 
-				name="Activate" 
-				component={ActivateScreen} 
+				name="Activation" 
+				component={ActivationScreen} 
                 options={{ keyboardHandlingEnabled: true }}
 			/>
 			<Stack.Screen 
-				name="Onboarding" 
-				component={OnboardingScreen} 
+				name="ActivationOnboarding" 
+				component={ActivationOnboardingScreen} 
 				options={{ keyboardHandlingEnabled: true }}
 			/>
 			<Stack.Screen 
-				name="EmailVerify" 
-				component={EmailVerifyScreen} 
+				name="ActivationEmailVerify" 
+				component={ActivationEmailVerifyScreen} 
+				options={{ keyboardHandlingEnabled: true }}
+			/>
+			<Stack.Screen 
+				name="ActivationSetPassword" 
+				component={ActivationSetPasswordScreen} 
 				options={{ keyboardHandlingEnabled: true }}
 			/>
         </Stack.Navigator>

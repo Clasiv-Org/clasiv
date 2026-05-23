@@ -13,9 +13,10 @@ export type RootStackParamList = {
 export type AuthStackParamList = {
 	Landing: undefined;
     Login: undefined;
-	Activate: undefined;
-	Onboarding: undefined;
-	EmailVerify: undefined;
+	Activation: undefined;
+	ActivationOnboarding: undefined;
+	ActivationEmailVerify: undefined;
+    ActivationSetPassword: undefined;
 };
 
 export type TabParamList = {

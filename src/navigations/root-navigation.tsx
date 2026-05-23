@@ -10,7 +10,12 @@ const RootNavigator = () => {
     const isAuthenticated = useIsLoggedIn();
 
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator 
+			screenOptions={{ 
+				headerShown: false,
+				animation: "none",
+			}}
+		>
             {isAuthenticated ? (
 				<Stack.Screen name="Main" component={AppNavigator} />
             ) : (
