@@ -34,7 +34,8 @@ import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { useAuthStore } from "@/store/auth";
-import { InputValueProps } from "src/types/input-bar";
+import { InputValueProps } from "@/types/input-bar";
+import { ActivationInitiateSchema } from "@/types/auth";
 
 const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -57,9 +58,9 @@ const useKeyboardHeight = () => {
 
 const isDev = false;
 
-const ActivateScreen = () => {
+const ActivationScreen = () => {
 	const insets = useSafeAreaInsets();
-	const { loading } = useAuthStore();
+	const { loading, message, error, activationInitiate } = useAuthStore();
 	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
 	const [userName, setUserName] = useState<InputValueProps>({value: ""});
@@ -115,7 +116,18 @@ const ActivateScreen = () => {
 			}
             return;
 		}
-		navigation.navigate("Onboarding");
+
+        const data = ActivationInitiateSchema.parse({
+            userName: userName.value,
+            password: password.value
+        });
+		console.log(data);
+        await activationInitiate(data);
+		console.log(useAuthStore.getState().message);
+		console.log(useAuthStore.getState().statusCode);
+		if(useAuthStore.getState().statusCode === 200) {
+			navigation.navigate("ActivationOnboarding");
+		}
 	};
 
 	return (
@@ -358,4 +370,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ActivateScreen;
+export default ActivationScreen;
