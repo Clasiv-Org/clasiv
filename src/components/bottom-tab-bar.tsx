@@ -14,7 +14,7 @@ import { BlurView } from "@react-native-community/blur";
 const tabs: TabButton[] = [
 	{ route: "Assignments",		icon: "checklist",	label: "Assignments"    },
 	{ route: "Home",			icon: "home-fill",  label: "Home"			},
-	{ route: "Announcements",	icon: "inbox-fill", label: "Announcements"	},
+	{ route: "Notifications",	icon: "inbox-fill", label: "Notifications"	},
 ];
 
 const BottomTabBar = ({ state, navigation }: BottomTabBarProps) => {

@@ -26,7 +26,7 @@ const TabNavigator = () => {
 				component={HomeScreen} 
 			/>
             <Tab.Screen 
-				name="Announcements" 
+				name="Notifications" 
 				component={NotificationScreen} 
 			/>
         </Tab.Navigator>

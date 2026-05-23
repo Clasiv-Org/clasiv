@@ -22,7 +22,7 @@ export type AuthStackParamList = {
 export type TabParamList = {
     Home: undefined;
     Assignments: undefined;
-    Announcements: undefined;
+    Notifications: undefined;
 };
 
 export type AppStackParamList = {
