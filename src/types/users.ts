@@ -85,5 +85,10 @@ export const UserSchema = z.object({
 	lastLoginAt: z.string().nullable(),
 });  
 
+export const ActivationUserSchema = UserSchema.extend({
+    password: z.string().nullable().default(null),
+});
+
 export type User			= z.infer<typeof UserSchema>;
+export type ActivationUser	= z.infer<typeof ActivationUserSchema>;
 export type UserProfile		= z.infer<typeof UserProfileSchema>;
