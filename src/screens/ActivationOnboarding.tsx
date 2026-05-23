@@ -33,6 +33,9 @@ import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { FontAwesome6 } from "@react-native-vector-icons/fontawesome6";
+import { useAuthStore } from "@/store/auth";
+import { capitalizeWords } from "@/utils/string";
+import { ActivationFormSchema } from "@/types/auth";
 
 const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -55,15 +58,14 @@ const useKeyboardHeight = () => {
 
 const isDev = false;
 
-const OnboardingScreen = () => {
+const ActivationOnboardingScreen = () => {
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
-	const [userName, setUserName] = useState("");
-	const [phoneNo, setPhoneNo] = useState("");
-	const [emailId, setEmailId] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
+	const { loading, activationUser, activationEmailRequestOtp } = useAuthStore();
+	const [userName, setUserName] = useState(activationUser?.userName || "");
+	const [phoneNo, setPhoneNo] = useState(activationUser?.phoneNo || "");
+	const [emailId, setEmailId] = useState(activationUser?.emailId || "");
 
 	const opacity = useSharedValue(0);
 	const translateX = useSharedValue(40);
@@ -79,13 +81,6 @@ const OnboardingScreen = () => {
 			};
 		}, [])
 	);
-
-	useEffect(() => {
-        if (password !== confirmPassword) {
-            console.log("Password Mismatch");
-        }
-		else console.log("Password Match");
-	}, [confirmPassword])
 	
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: opacity.value,
@@ -95,7 +90,18 @@ const OnboardingScreen = () => {
 	const handleBack = () => navigation.goBack();
 
 	const handleFormSubmisson = async () => {
-        navigation.navigate("EmailVerify");
+		const data = ActivationFormSchema.parse({
+            userName: userName,
+            phoneNo: phoneNo,
+            emailId: emailId,
+		});
+		console.log(data);
+        await activationEmailRequestOtp(data);
+		console.log(useAuthStore.getState().message);
+		console.log(useAuthStore.getState().statusCode);
+		if(useAuthStore.getState().statusCode === 200){
+			navigation.navigate("ActivationEmailVerify");
+		}
 	};
 
 	return (
@@ -146,7 +152,8 @@ const OnboardingScreen = () => {
 							<FontAwesome6 name="id-card" size={100} color={Color.primaryAlt} />
 						}
 						<Text style={styles.titleText}>
-							Setting up your account!
+							{`Hello, ${capitalizeWords(activationUser?.fullName!)}\n`}
+							{`Set up your account!`}
 						</Text>
 					</View>
 					<View style={styles.containerAction}>
@@ -194,32 +201,6 @@ const OnboardingScreen = () => {
 								autoCorrect={false}
 								placeholder="Email Address"
 								textContentType="emailAddress"
-							/>
-							<InputBar
-								value={password}
-								onChangeText={setPassword}
-								style={styles.inputBar}
-								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
-								colors={[Color.tertiary, Color.tertiaryDark]}
-								start={{ x: 0.5, y: 0 }}
-								end={{ x: 0.5, y: 1 }}
-								autoCapitalize="none"
-								autoCorrect={false}
-								placeholder="New Password"
-								textContentType="password"
-							/>
-							<InputBar
-								value={confirmPassword}
-								onChangeText={setConfirmPassword}
-								style={styles.inputBar}
-								placeholderTextColor={withOpacity(Color.primaryWhite, 0.5)}
-								colors={[Color.tertiary, Color.tertiaryDark]}
-								start={{ x: 0.5, y: 0 }}
-								end={{ x: 0.5, y: 1 }}
-								autoCapitalize="none"
-								autoCorrect={false}
-								placeholder="Comfirm New Password"
-								textContentType="password"
 							/>
 						</View>
 						<View style={styles.containerButton}>
@@ -290,7 +271,7 @@ const styles = StyleSheet.create({
 		flexGrow: 1,
 		justifyContent: "flex-start",
 		alignItems: "center",
-		paddingTop: 20,
+		paddingTop: 50,
 		gap: 20,
 		backgroundColor: isDev ? "red" : "transparent",
 	},
@@ -340,4 +321,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default OnboardingScreen;
+export default ActivationOnboardingScreen;
