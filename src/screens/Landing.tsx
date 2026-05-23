@@ -46,7 +46,7 @@ const LandingScreen = () => {
 	}));
 
     const handleActivate = () => {
-        navigation.navigate("Activate");
+        navigation.navigate("Activation");
     }
     const handleLogin = () => {
         navigation.navigate("Login");
