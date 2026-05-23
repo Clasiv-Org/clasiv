@@ -31,6 +31,7 @@ import GradientBackground from "@/components/gradient-background";
 import InputBar from "@/components/input-bar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
+import { useAuthStore } from "@/store/auth";
 
 const useKeyboardHeight = () => {
 	const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -53,10 +54,11 @@ const useKeyboardHeight = () => {
 
 const isDev = false;
 
-const EmailVerifyScreen = () => {
+const ActivationEmailVerifyScreen = () => {
 	const insets = useSafeAreaInsets();
 	const navigation = useNavigation<AuthStackNavigationProps>();
 	const keyboardHeight = useKeyboardHeight();
+	const { loading, activationUser, activationEmailVerifyOtp} = useAuthStore();
 	const [otp, setOtp] = useState("");
 
 	const opacity = useSharedValue(0);
@@ -82,7 +84,12 @@ const EmailVerifyScreen = () => {
 	const handleBack = () => navigation.goBack();
 
 	const handleSubmit = async () => {
-		navigation.navigate("Onboarding");
+        await activationEmailVerifyOtp(otp);
+		console.log(useAuthStore.getState().message);
+        console.log(useAuthStore.getState().statusCode);
+        if(useAuthStore.getState().statusCode === 200) {
+            navigation.navigate("ActivationSetPassword");
+        }
 	};
 
 	const handleEmailResend = async () => {
@@ -293,5 +300,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default EmailVerifyScreen;
-
+export default ActivationEmailVerifyScreen;
