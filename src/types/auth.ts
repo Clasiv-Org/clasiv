@@ -30,6 +30,7 @@ export const ActivationEmailVerifyOtpSchema = z.object({
 
 export const ActivationCompleteSchema = ActivationFormSchema.extend({
     activationSessionId: z.string(),
+	password: z.string().min(8, 'Password is required'),
 });
 
 export const LoginSchema = z.object({
