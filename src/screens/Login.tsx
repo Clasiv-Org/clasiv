@@ -92,7 +92,7 @@ const LoginScreen = () => {
 		const currentIndex = state.index;
 
 		if (currentIndex > 0 && state.routes[currentIndex - 1].name === "Landing") {
-			navigation.push("Activate");
+			navigation.push("Activation");
 		} 
 		else navigation.pop();
 	};

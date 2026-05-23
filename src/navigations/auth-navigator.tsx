@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LandingScreen from "@/screens/LandingScreen";
-import LoginScreen from "@/screens/LoginScreen";
+import LoginScreen from "@/screens/Login";
 import ActivationScreen from "@/screens/Activation";
 import ActivationOnboardingScreen from "@/screens/ActivationOnboarding";
 import ActivationEmailVerifyScreen from "@/screens/ActivationEmailVerify";
