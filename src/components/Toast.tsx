@@ -89,7 +89,7 @@ const Toast = () => {
 			styles.container,
 			{ 
 				backgroundColor: withOpacity(color, 0.2), 
-				borderColor: withOpacity(color, 0.5),
+				borderColor: withOpacity(color, 0.3),
 				bottom: position === "bottom" ? 130 : undefined,
 				top: position === "top" ? 100 : undefined
 			},
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "flex-start",
-		gap: 2,
+		gap: 3,
 	},
 	icon: {
 		padding: 0,
@@ -145,17 +145,17 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	titleText: {
-		fontFamily: "Sora-Bold",
-		fontSize: 24,
-		lineHeight: 30,
+		fontFamily: "Sora-SemiBold",
+		fontSize: 18,
+		lineHeight: 20.7,
 		includeFontPadding: false,
 		textAlignVertical: "center",
 		color: Color.primaryWhite,
 	},
 	descriptionText: {
-		fontFamily: "Sora-SemiBold",
-		fontSize: 15,
-		lineHeight:18,
+		fontFamily: "Sora-Regular",
+		fontSize: 13.50337584396099,
+		lineHeight:15.52888222055514,
 		includeFontPadding: false,
 		textAlignVertical: "center",
 		color: withOpacity(Color.primaryWhite, 0.6),
