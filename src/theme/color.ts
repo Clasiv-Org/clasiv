@@ -8,6 +8,10 @@ export const Color = {
 	tertiary: "#484848",
 	tertiaryDark: "#2E2E2E",
 	primaryWhite: "#D9D9D9",
+	success: "#4AE800",
+    error: "#DC143C",
+    warning: "#FFC107",
+    information: "#4A6182",
 };
 
 export const Blobs = [
