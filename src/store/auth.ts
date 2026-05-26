@@ -8,6 +8,7 @@ import { ActivationUser } from "@/types/users";
 import { activationEmailRequestOtp } from "@/api/auth/activationEmailRequestOtp";
 import { activationEmailVerifyOtp } from "@/api/auth/activationEmailVerifyOtp";
 import { activationComplete } from "@/api/auth/activationComplete";
+import { parseError } from "@/utils/error";
 
 export const useAuthStore = create<AuthStore>()(
 	persist(
@@ -32,9 +33,11 @@ export const useAuthStore = create<AuthStore>()(
 					set({ 
 						user: response.user, 
 						accessToken: response.tokens.accessToken, 
+						message: response.message,
+						statusCode: response.statusCode
 					});
 				} catch (error) {
-					set({ error: (error as Error).message ?? "Something went wrong!" });
+                    set(parseError(error));
 				} finally {
                     set({ loading: false });
 				}
@@ -43,6 +46,7 @@ export const useAuthStore = create<AuthStore>()(
 				set({ loading: true, statusCode: null, message: null, error: null,});
 				try {
 					const response = await activationInitiate(data);
+					console.log("from store: ",response);
 					set ({
                         activationUser: response.user !== null 
 							? {...response.user, password: null}
@@ -52,9 +56,10 @@ export const useAuthStore = create<AuthStore>()(
                         statusCode: response.statusCode
 					});
 				} catch (error) {
-					set({ error: (error as Error).message ?? "Something went wrong!" });
+					set(parseError(error));
 				} finally {
-                    set({ loading: false });
+					console.log(useAuthStore.getState().message);
+					set({ loading: false });
 				}
 			},
 			activationEmailRequestOtp: async (data) => {
@@ -81,7 +86,7 @@ export const useAuthStore = create<AuthStore>()(
 						statusCode: response.statusCode
                     });
 				} catch (error) {
-                    set({ error: (error as Error).message ?? "Something went wrong!" });
+					set(parseError(error));
 				} finally {
                     set({ loading: false });
 				}
@@ -100,7 +105,7 @@ export const useAuthStore = create<AuthStore>()(
                         statusCode: response.statusCode
                     });
                 } catch (error) {
-                    set({ error: (error as Error).message ?? "Something went wrong!" });
+                    set(parseError(error));
                 } finally {
                     set({ loading: false });
                 }
@@ -132,7 +137,7 @@ export const useAuthStore = create<AuthStore>()(
                         activationSessionId: null
 					});
                 } catch (error) {
-                    set({ error: (error as Error).message ?? "Something went wrong!" });
+                    set(parseError(error));
                 } finally {
                     set({ loading: false });
                 }
