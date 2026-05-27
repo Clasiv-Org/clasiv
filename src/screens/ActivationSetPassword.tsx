@@ -4,6 +4,7 @@ import {
 	useState 
 } from "react";
 import { 
+	ActivityIndicator,
 	Image,
 	ImageBackground,
 	Keyboard,
@@ -29,7 +30,7 @@ import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/Button";
 import GradientBackground from "@/components/gradient-background";
-import InputBar from "@/components/input-bar";
+import InputBar from "@/components/InputBar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { FontAwesome6 } from "@react-native-vector-icons/fontawesome6";
@@ -81,12 +82,12 @@ const ActivationSetPasswordScreen = () => {
 	);
 
 	useEffect(() => {
-        if (password !== confirmPassword) {
-            console.log("Password Mismatch");
-        }
+		if (password !== confirmPassword) {
+			console.log("Password Mismatch");
+		}
 		else console.log("Password Match");
 	}, [confirmPassword])
-	
+
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: opacity.value,
 		transform: [{ translateX: translateX.value }],
@@ -96,9 +97,9 @@ const ActivationSetPasswordScreen = () => {
 
 	const handleFormSubmisson = async () => {
 		if(password === "" || confirmPassword === "") {
-            return;
-        }
-        await activationComplete(password);
+			return;
+		}
+		await activationComplete(password);
 		console.log(useAuthStore.getState().message);
 		console.log(useAuthStore.getState().statusCode);
 	};
@@ -167,7 +168,9 @@ const ActivationSetPasswordScreen = () => {
 								autoCapitalize="none"
 								autoCorrect={false}
 								placeholder="New Password"
-								textContentType="password"
+								secureTextEntry
+								textContentType="newPassword"
+								autoComplete="new-password"
 							/>
 							<InputBar
 								value={confirmPassword}
@@ -180,18 +183,30 @@ const ActivationSetPasswordScreen = () => {
 								autoCapitalize="none"
 								autoCorrect={false}
 								placeholder="Comfirm New Password"
-								textContentType="password"
+								secureTextEntry
+								textContentType="newPassword"
+								autoComplete="new-password"
 							/>
 						</View>
 						<View style={styles.containerButton}>
 							{keyboardHeight === 0 && (
 								<Button
 									style={styles.button}
-									gradientStyle={styles.buttonGradient}
 									colors={[Color.primary, Color.primaryDark]}
 									onPress={handleFormSubmisson}
 								>
-									<Text style={styles.buttonText}>Submit</Text>
+									<View style={styles.buttonIcon}>
+										<View style={styles.buttonIconInner}>
+											{ loading &&
+												<ActivityIndicator 
+													size="large"
+													color={Color.primaryWhite}
+												/>}
+										</View>
+										<Text style={styles.buttonText}>Activate</Text>
+										<View style={styles.buttonIconInner}/>
+									</View>
+
 								</Button>
 							)}
 						</View>
@@ -272,13 +287,25 @@ const styles = StyleSheet.create({
 		height: 60,
 		borderRadius: 30,
 	},
-	buttonGradient: {
-		paddingBottom: 5,
+	buttonIcon: {
+		width: "100%",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+		gap: 10,
+		backgroundColor: isDev ? "green" : "transparent",
+	},
+	buttonIconInner: {
+		flex: 1,
+		height: "100%",
+		backgroundColor: isDev ? "yellow" : "transparent",
+		alignItems: "flex-end",
+		justifyContent: "center",
 	},
 	buttonText: {
 		fontFamily: "Sora-Bold",
 		fontSize: 28,
-		textAlignVertical: "top",
+		lineHeight: 32,
 		color: Color.primaryWhite,
 	},
 	loginButton: {},

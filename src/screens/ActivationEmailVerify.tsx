@@ -4,6 +4,7 @@ import {
 	useState 
 } from "react";
 import { 
+	ActivityIndicator,
 	ImageBackground,
 	Keyboard,
 	KeyboardEvent,
@@ -28,7 +29,7 @@ import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/Button";
 import GradientBackground from "@/components/gradient-background";
-import InputBar from "@/components/input-bar";
+import InputBar from "@/components/InputBar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { useAuthStore } from "@/store/auth";
@@ -84,21 +85,21 @@ const ActivationEmailVerifyScreen = () => {
 	const handleBack = () => navigation.goBack();
 
 	const handleSubmit = async () => {
-        await activationEmailVerifyOtp(otp);
+		await activationEmailVerifyOtp(otp);
 		console.log(useAuthStore.getState().message);
-        console.log(useAuthStore.getState().statusCode);
-        if(useAuthStore.getState().statusCode === 200) {
-            navigation.navigate("ActivationSetPassword");
-        }
+		console.log(useAuthStore.getState().statusCode);
+		if(useAuthStore.getState().statusCode === 200) {
+			navigation.navigate("ActivationSetPassword");
+		}
 	};
 
 	const handleEmailResend = async () => {
-        navigation.navigate("Login");
-    };
+		navigation.navigate("Login");
+	};
 
-    const handleOtpResend = () => {
-        navigation.navigate("Login");
-    };
+	const handleOtpResend = () => {
+		navigation.navigate("Login");
+	};
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -172,11 +173,21 @@ const ActivationEmailVerifyScreen = () => {
 						<View style={styles.containerButton}>
 							<Button
 								style={styles.button}
-								gradientStyle={styles.buttonGradient}
 								colors={[Color.primary, Color.primaryDark]}
 								onPress={handleSubmit}
 							>
-								<Text style={styles.buttonText}>Submit</Text>
+								<View style={styles.buttonIcon}>
+									<View style={styles.buttonIconInner}>
+										{ loading &&
+											<ActivityIndicator 
+												size="large"
+												color={Color.primaryWhite}
+											/>}
+									</View>
+									<Text style={styles.buttonText}>Activate</Text>
+									<View style={styles.buttonIconInner}/>
+								</View>
+
 							</Button>
 							{keyboardHeight === 0 && (
 								<Pressable
@@ -234,7 +245,7 @@ const styles = StyleSheet.create({
 		margin: 20,
 		flexDirection: "row",
 		justifyContent: "space-evenly",
-        alignItems: "center",
+		alignItems: "center",
 		gap: 10,
 		backgroundColor: isDev ? "blue" : "transparent",
 	},
@@ -271,13 +282,25 @@ const styles = StyleSheet.create({
 		height: 60,
 		borderRadius: 30,
 	},
-	buttonGradient: {
-		paddingBottom: 5,
+	buttonIcon: {
+		width: "100%",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+		gap: 10,
+		backgroundColor: isDev ? "green" : "transparent",
+	},
+	buttonIconInner: {
+		flex: 1,
+		height: "100%",
+		backgroundColor: isDev ? "yellow" : "transparent",
+		alignItems: "flex-end",
+		justifyContent: "center",
 	},
 	buttonText: {
 		fontFamily: "Sora-Bold",
 		fontSize: 28,
-		textAlignVertical: "top",
+		lineHeight: 32,
 		color: Color.primaryWhite,
 	},
 	loginButton: {},

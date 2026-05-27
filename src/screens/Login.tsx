@@ -30,11 +30,12 @@ import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/Button";
 import GradientBackground from "@/components/gradient-background";
-import InputBar from "@/components/input-bar";
+import InputBar from "@/components/InputBar";
 import { withOpacity } from "@/utils/color";
 import { LoginSchema } from "@/types/auth";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { useAuthStore } from "@/store/auth";
+import { useToastStore } from "@/store/toast";
 import { InputValueProps } from "@/types/input-bar";
 
 const useKeyboardHeight = () => {
@@ -112,6 +113,10 @@ const LoginScreen = () => {
 					placeholder: "Password is required"
 				});
 			}
+			useToastStore.getState().show({
+                type: "warning",
+                message: "Credentials are required",
+			});
             return;
 		}
 
@@ -119,7 +124,6 @@ const LoginScreen = () => {
 			identifier: identifier.value,
 			password: password.value
 		});
-		console.log(data);
 		await login(data);
 	};
 
@@ -189,6 +193,8 @@ const LoginScreen = () => {
 								autoCapitalize="none"
 								autoCorrect={false}
 								placeholder={identifier.placeholder ?? "Username or Email"}
+                                textContentType="username"
+                                autoComplete="username"
 							/>
 							<InputBar
 								value={password.value}
@@ -207,23 +213,25 @@ const LoginScreen = () => {
 								autoCapitalize="none"
 								autoCorrect={false}
 								placeholder={password.placeholder ?? "Password"}
+                                secureTextEntry
 								textContentType="password"
+                                autoComplete="password"
 							/>
 						</View>
 						<View style={styles.containerButton}>
 							<Button
 								style={styles.button}
-								gradientStyle={styles.buttonGradient}
 								colors={[Color.primary, Color.primaryDark]}
 								onPress={handleLogin}
 							>
 								<View style={styles.buttonIcon}>
 									<View style={styles.buttonIconInner}>
-									{ loading &&
-									<ActivityIndicator 
-										size="large"
-										color={Color.primaryWhite}
-									/>}
+										{ loading &&
+											<ActivityIndicator 
+												size="large"
+												color={Color.primaryWhite}
+											/>
+										}
 									</View>
 									<Text style={styles.buttonText}>Login</Text>
 									<View style={styles.buttonIconInner}/>
@@ -317,9 +325,6 @@ const styles = StyleSheet.create({
 		borderRadius: 30,
 		backgroundColor: isDev ? "green" : "transparent",
 	},
-	buttonGradient: {
-		paddingBottom: 5,
-	},
     buttonIcon: {
 		width: "100%",
         flexDirection: "row",
@@ -338,6 +343,7 @@ const styles = StyleSheet.create({
 	buttonText: {
 		fontFamily: "Sora-Bold",
 		fontSize: 28,
+		lineHeight: 32,
 		textAlignVertical: "top",
 		color: Color.primaryWhite,
 		backgroundColor: isDev ? "red" : "transparent",

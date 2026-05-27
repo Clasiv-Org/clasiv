@@ -4,6 +4,7 @@ import {
 	useState 
 } from "react";
 import { 
+	ActivityIndicator,
 	Image,
 	ImageBackground,
 	Keyboard,
@@ -29,7 +30,7 @@ import { AuthStackNavigationProps } from "@/types/navigation";
 import { Blobs, Color } from "@/theme/color";
 import Button from "@/components/Button";
 import GradientBackground from "@/components/gradient-background";
-import InputBar from "@/components/input-bar";
+import InputBar from "@/components/InputBar";
 import { withOpacity } from "@/utils/color";
 import { Octicons } from "@react-native-vector-icons/octicons";
 import { FontAwesome6 } from "@react-native-vector-icons/fontawesome6";
@@ -81,7 +82,7 @@ const ActivationOnboardingScreen = () => {
 			};
 		}, [])
 	);
-	
+
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: opacity.value,
 		transform: [{ translateX: translateX.value }],
@@ -91,12 +92,12 @@ const ActivationOnboardingScreen = () => {
 
 	const handleFormSubmisson = async () => {
 		const data = ActivationFormSchema.parse({
-            userName: userName,
-            phoneNo: phoneNo,
-            emailId: emailId,
+			userName: userName,
+			phoneNo: phoneNo,
+			emailId: emailId,
 		});
 		console.log(data);
-        await activationEmailRequestOtp(data);
+		await activationEmailRequestOtp(data);
 		console.log(useAuthStore.getState().message);
 		console.log(useAuthStore.getState().statusCode);
 		if(useAuthStore.getState().statusCode === 200){
@@ -207,11 +208,20 @@ const ActivationOnboardingScreen = () => {
 							{keyboardHeight === 0 && (
 								<Button
 									style={styles.button}
-									gradientStyle={styles.buttonGradient}
 									colors={[Color.primary, Color.primaryDark]}
 									onPress={handleFormSubmisson}
 								>
-									<Text style={styles.buttonText}>Submit</Text>
+									<View style={styles.buttonIcon}>
+										<View style={styles.buttonIconInner}>
+											{ loading &&
+												<ActivityIndicator 
+													size="large"
+													color={Color.primaryWhite}
+												/>}
+										</View>
+										<Text style={styles.buttonText}>Activate</Text>
+										<View style={styles.buttonIconInner}/>
+									</View>
 								</Button>
 							)}
 						</View>
@@ -292,13 +302,25 @@ const styles = StyleSheet.create({
 		height: 60,
 		borderRadius: 30,
 	},
-	buttonGradient: {
-		paddingBottom: 5,
+	buttonIcon: {
+		width: "100%",
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+		gap: 10,
+		backgroundColor: isDev ? "green" : "transparent",
+	},
+	buttonIconInner: {
+		flex: 1,
+		height: "100%",
+		backgroundColor: isDev ? "yellow" : "transparent",
+		alignItems: "flex-end",
+		justifyContent: "center",
 	},
 	buttonText: {
 		fontFamily: "Sora-Bold",
 		fontSize: 28,
-		textAlignVertical: "top",
+		lineHeight: 32,
 		color: Color.primaryWhite,
 	},
 	loginButton: {},
