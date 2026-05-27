@@ -1,6 +1,7 @@
 import React, { 
     useEffect,
 	useState, 
+	forwardRef, 
 } from "react";
 import { 
 	StyleSheet, 
@@ -24,7 +25,7 @@ import { Color } from "@/theme/color";
 import { withOpacity } from "@/utils/color";
 
 
-const InputBar = ({
+const InputBar = forwardRef<TextInput, InputBarProps>(({
 	children,
 	colors,
 	locations,
@@ -43,7 +44,7 @@ const InputBar = ({
 	textStyle,
 	placeholderLabelstyle,
 	...rest
-}: InputBarProps) => {
+}: InputBarProps, ref ) => {
 	const [secureText, setSecureText] = useState<boolean>(true);
 	const [valueLocal, setValueLocal] = useState<string>("");
 	const isActive = value 
@@ -113,6 +114,7 @@ const InputBar = ({
 			<View style={styles.container}>
 				{children}
 				<TextInput
+                    ref={ref}
 					value={value ?? valueLocal}
 					onChangeText={onChangeText ?? setValueLocal}
 					placeholder={placeholder ?? "Input..."}
@@ -166,7 +168,7 @@ const InputBar = ({
 			</View>
 		</LinearGradient>
 	);
-}
+});
 
 const styles = StyleSheet.create({
 	gradient: {
