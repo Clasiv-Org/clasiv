@@ -27,6 +27,7 @@ import {
 	capitalizeFirstLetter, 
 	capitalizeWords 
 } from "@/utils/string";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const mapColor = {
 	"success":		Color.success,
@@ -51,6 +52,7 @@ const Icon = ({ type }: { type: ToastType }) => {
 }
 
 const Toast = () => {
+	const insets = useSafeAreaInsets();
 	const { visible, title, message, type, duration, position, hide } = useToastStore();
 	const color = mapColor[type];
 	const translateY = useSharedValue(position === "bottom" ? 100 : -100);
@@ -61,13 +63,13 @@ const Toast = () => {
 			translateY.value = position === "bottom" ? 100 : -100;
 			opacity.value = 0;
 
-			translateY.value = withSpring(0, { damping: 15, stiffness: 100 });
+			translateY.value = withSpring(0, { damping: 40, stiffness: 800 });
 			opacity.value = withTiming(1, { duration: 300 });
 
 			const timer = setTimeout(() => {
 				translateY.value = withSpring(
 					position === "bottom" ? 100 : -100, 
-					{ damping: 15, stiffness: 100 }
+					{ damping: 40, stiffness: 800 }
 				);
 				opacity.value = withTiming(0, { duration: 300 }, (finished) => {
 					if (finished) runOnJS(hide)();
@@ -90,15 +92,18 @@ const Toast = () => {
 			{ 
 				backgroundColor: withOpacity(color, 0.2), 
 				borderColor: withOpacity(color, 0.3),
-				bottom: position === "bottom" ? 130 : undefined,
-				top: position === "top" ? 100 : undefined
+				bottom: position === "bottom" ? (insets.bottom + 20) : undefined,
+				top: position === "top" ? (insets.top + 15) : undefined
 			},
 			animatedStyle,
 		]}>
 			<BlurView
 				blurType="dark"
 				blurAmount={5}
-				style={StyleSheet.absoluteFill}
+				style={[
+					StyleSheet.absoluteFill,
+					{ backgroundColor: withOpacity("#000000", 0.2) }
+				]}
 			/>
 			<Icon type={type} />
 			<View style={styles.containerContent}>
